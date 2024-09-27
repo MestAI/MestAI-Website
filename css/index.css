@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+* {
+    font-family: Outfit !important;
+}
+
+body {
+    background-color: #0C0A09;
+    color: white;
+}
+
+#choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #292524;
+    height: 200px;
+    width: 300px;
+    margin: auto;
+    border-radius: 30px !important;
+}
+
+.title-bar {
+    background-color: #292524;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+    width: auto;
+    height: 100px;
+}
+
+#choice label {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#choice button {
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #5c4f4c;
+    /* Delete white outline */
+    border: 0px;
+    color: white;
+    margin-top: 5px;
+}
+
+#chat-form{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #292524;
+    height: auto;
+    width: 500px;
+    margin: auto;
+    border-radius: 30px;
+}
+
+#chat-form label {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+
+#chat-form textarea[id="userInput"] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #292524;
+    color: white;
+    font-size: 12px;
+    /* text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff; */
+}
+
+#chat-form input[type="submit"] {
+    width: 20%;
+    padding: 10px 2px;
+    margin: 0px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #292524;
+    color: white;
+    /* text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff; */
+}
+
+#result-bot {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #292524;
+    color: white;
+    /* text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff; */
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #292524;
+    height: auto;
+    width: 100%;
+    margin: auto;
+    /* border-radius: 30px; */
+}
+
+.notifications {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+
+.notification {
+    background-color: #292524;
+    padding: 10px;
+    border-radius: 5px;
+    /* color: white; */
+    margin-bottom: 10px;
+}

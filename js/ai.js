@@ -41,6 +41,7 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 	// document.getElementById('result-bot').textContent = 'Waiting for response...';
 	const userInput = document.getElementById('userInput').value;
 	AppendHistory(userInput, false);
+	AppendHistory(" <img src='./imgs/loading.gif'> Thinking...", true);
 	const selectedModel = localStorage.getItem('choice');
 	const messages = [{ role: "user", content: userInput }];
 	try {
@@ -62,7 +63,7 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 		}
 		const data = await response.json();
 		const botResponse = data.choices[0].message.content;
-		AppendHistory(botResponse, true);
+		EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
 	} catch (error) {
 		TimeNotification(10, "Error", `Error: ${error}`);
 		console.error("Error:", error);

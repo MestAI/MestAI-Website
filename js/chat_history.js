@@ -7,10 +7,15 @@ function AppendHistory(message, is_ai = false) {
     } else {
         newMessage.classList.add("user-message");
     }
-    const newMessageText = document.createElement("p");
-    newMessageText.textContent = message;
+    const newMessageText = document.createElement("span");
+    newMessageText.innerHTML = message;
     newMessage.appendChild(newMessageText);
     chatHistory.append(newMessage);
     chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+function EditMessage(element, newText) {
+    if (!element || !newText) return;
+    element.querySelector("span").innerHTML = newText;
 }
 

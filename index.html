@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="css/index.css">
   <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
   <div class="title-bar">
-	<h1 class="title">MestAI</h1>
-	<h6 style="margin-top: -10px; margin-bottom: 20px;">AI needs to be free.</h6>
+    <h1 class="title">MestAI</h1>
+    <h6 style="margin-top: -10px; margin-bottom: 20px;">AI needs to be free.</h6>
   </div>
   <!-- <a href="docs/index.html" style="float: left;">Docs</a> -->
   <meta name="keywords" content="AI, GPT, ChatGPT, Llama, Mest, MestAI, OpenAI, Copilot, MetaAI, Chat, ai, website, mestai, gpt, chatgpt, mestai.online">
@@ -17,47 +17,45 @@
 </head>
 <body>
 
-	<form id="choice">
-		<label for="models">Choose a model:</label>
-		<select id="models"></select>
-		<button type="submit" id="load-button">Confirm</button>
-	</form>
+  <form id="choice">
+    <label for="models">Choose a model:</label>
+    <select id="models"></select>
+    <button type="submit" id="load-button">Confirm</button>
+  </form>
 
+  <div id="notifications" class="notifications"></div>
 
-	<div id="notifications" class="notifications"></div>
+  <form id="chat-form">
+    <label for="userInput">Enter your prompt:</label><br>
+    <textarea type="text" id="userInput" name="userInput" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Submit"><br><br>
+    
+    <div class="chat-history"></div>
+  </form>
 
-	<form id="chat-form">
-		<label for="userInput">Enter your prompt:</label><br>
-		<textarea type="text" id="userInput" name="userInput" rows="4" cols="50"></textarea><br>
-		<input type="submit" value="Submit"><br><br>
-		
-		<div class="chat-history"></div>
-	</form>
+  <footer>
+    <p>This site maded by @justablock_ and @syirezz</p>
+    <div id="donate-button-container">
+      <div id="donate-button"></div>
+      <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+      <script>
+        PayPal.Donation.Button({
+          env:'production',
+          hosted_button_id:'ESUVEZVYMCM48',
+          image: {
+            src:'./imgs/Support.png',
+            alt:'Donate with PayPal button',
+            title:'PayPal - The safer, easier way to pay online!',
+          }
+        }).render('#donate-button');
+      </script>
+    </div>
+  </footer>
 
-
-	<footer>
-		<p>This site maded by @justablock_ and @syirezz</p>
-		<div id="donate-button-container">
-			<div id="donate-button"></div>
-			<script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
-			<script>
-			PayPal.Donation.Button({
-			env:'production',
-			hosted_button_id:'ESUVEZVYMCM48',
-			image: {
-			src:'./imgs/Support.png',
-			alt:'Donate with PayPal button',
-			title:'PayPal - The safer, easier way to pay online!',
-			}
-			}).render('#donate-button');
-			</script>
-		</div>
-	</footer>
-
-<script src="js/chat_history.js"></script>
-<script src="js/choice.js"></script>
-<script src="js/ai.js"></script>
-<script src="js/notification.js"></script>
+  <script src="js/chat_history.js"></script>
+  <script src="js/choice.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/notification.js"></script>
 </body>
 <!-- тут был syirezz -->
 <!-- here was justablock too -->

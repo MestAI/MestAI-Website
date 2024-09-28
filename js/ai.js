@@ -1,4 +1,4 @@
-const api_url = 'https://reverse.mubi.tech/v1/chat/completions'; 
+const api_url = 'https://reverse.mubi.tech/v1/chat/completions';
 async function fetchAndGetReqModels() {
 	try {
 		const response = await fetch(api_url.replace('/chat/completions', '/models'));
@@ -21,7 +21,6 @@ async function fetchAndGetReqModels() {
 }
 
 
-
 async function populateDropdown() {
 	document.getElementById('models').disabled = true;
 	document.getElementById('load-button').disabled = true;
@@ -36,7 +35,7 @@ async function populateDropdown() {
 }
 
 window.onload = populateDropdown;
-document.getElementById('chat-form').addEventListener('submit', async function(event) {
+document.getElementById('chat-form').addEventListener('submit', async function (event) {
 	event.preventDefault();
 	// document.getElementById('result-bot').textContent = 'Waiting for response...';
 	const userInput = document.getElementById('userInput').value;
@@ -62,7 +61,8 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 			throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
 		}
 		const data = await response.json();
-		const botResponse = data.choices[0].message.content;
+		let botResponse = data.choices[0].message.content;
+		botResponse = convertMarkdown(botResponse);
 		EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
 	} catch (error) {
 		TimeNotification(10, "Error", `Error: ${error}`);
@@ -70,3 +70,14 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 	}
 });
 
+function convertMarkdown(text) {
+	let htmlOutput = marked.parse(text);
+	let tempDiv = document.createElement('div');
+	tempDiv.innerHTML = htmlOutput;
+
+	tempDiv.querySelectorAll('pre code').forEach((block) => {
+		hljs.highlightBlock(block);
+	});
+
+	return tempDiv.innerHTML;
+}

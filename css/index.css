@@ -89,7 +89,7 @@ body {
     /* text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff; */
 }
 
-#result-bot {
+.chat-history {
     width: 80%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -99,6 +99,42 @@ body {
     background-color: #292524;
     color: white;
     /* text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff; */
+}
+
+.ai-message {
+    background-color: #5c4f4c;
+    padding: 10px;
+    border-radius: 15px 15px 15px 0; /* Rounded corners like SMS bubbles */
+    margin-bottom: 10px;
+    float: left;
+    text-align: left;
+    max-width: 70%; /* Limits the width to prevent it from stretching */
+    clear: both; /* Ensures the layout stays intact */
+    color: white;
+}
+
+.user-message {
+    background-color: #5c4f4c;
+    padding: 10px;
+    border-radius: 15px 15px 0 15px; /* Rounded corners like SMS bubbles */
+    margin-bottom: 10px;
+    text-align: right;
+    max-width: 70%; /* Limits the width */
+    float: right;
+    clear: both; /* Ensures the layout stays intact */
+    color: white;
+}
+
+.ai-message::before {
+    content: "Ai: ";
+    font-weight: bold;
+    text-align: left;
+}
+
+.user-message::before {
+    content: "User: ";
+    font-weight: bold;
+    text-align: right;
 }
 
 footer {

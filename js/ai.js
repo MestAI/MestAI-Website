@@ -38,8 +38,9 @@ async function populateDropdown() {
 window.onload = populateDropdown;
 document.getElementById('chat-form').addEventListener('submit', async function(event) {
 	event.preventDefault();
-	document.getElementById('result-bot').textContent = 'Waiting for response...';
+	// document.getElementById('result-bot').textContent = 'Waiting for response...';
 	const userInput = document.getElementById('userInput').value;
+	AppendHistory(userInput, false);
 	const selectedModel = localStorage.getItem('choice');
 	const messages = [{ role: "user", content: userInput }];
 	try {
@@ -61,7 +62,7 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 		}
 		const data = await response.json();
 		const botResponse = data.choices[0].message.content;
-		document.getElementById('result-bot').textContent = botResponse;
+		AppendHistory(botResponse, true);
 	} catch (error) {
 		TimeNotification(10, "Error", `Error: ${error}`);
 		console.error("Error:", error);

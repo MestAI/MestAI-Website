@@ -88,7 +88,7 @@ body {
 }
 
 .chat-history {
-    width: 80%;
+    position: relative; 
     padding: 12px 20px;
     margin: 8px 0;
     box-sizing: border-box;
@@ -96,6 +96,7 @@ body {
     border-radius: 4px;
     background-color: #292524;
     color: white;
+    z-index: 0; 
 }
 
 .ai-message {
@@ -146,6 +147,7 @@ footer {
     height: auto;
     width: 100%;
     margin: auto;
+    z-index: 1; /* Set a higher z-index to ensure it stays on top */
 }
 
 .notifications {

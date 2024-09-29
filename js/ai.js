@@ -47,6 +47,8 @@ document.getElementById('chat-form').addEventListener('submit', async function (
     const messages = [{ role: "user", content: userInput }];
     conversationHistory.push({ role: "user", content: userInput });
 
+	document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = true;
+
     try {
         const response = await fetch(api_url, {
             method: 'POST',
@@ -74,7 +76,9 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         EditMessage(document.querySelector(".ai-message:last-child"), `<img src='./imgs/cross.png', alt='❌' width='16px'> Oops... We got an error: ${error}`);
         TimeNotification(10, "Error", `Error: ${error}`);
         console.error("Error:", error);
-    }
+    } finally{
+		document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = false;
+	}
 });
 
 function convertMarkdown(text) {

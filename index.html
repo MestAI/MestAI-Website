@@ -18,15 +18,19 @@
         content="AI, GPT, ChatGPT, Llama, Mest, MestAI, OpenAI, Copilot, MetaAI, Chat, ai, website, mestai, gpt, chatgpt, mestai.online" />
     <meta name="description" content="Chat with over 35+ AI models for free and no registration!" />
     <meta name="author" content="Justablock and Syirezz" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2421127293566330"
         crossorigin="anonymous"></script>
 </head>
 
 <body>
     <form id="choice">
-        <label for="models">Choose a model:</label>
-        <select id="models"></select>
-        <button type="submit" id="load-button">Confirm</button>
+        <p id="load-text">Loading</p>
+        <div id="modelsForm">
+            <label for="models">Choose a model:</label>
+            <select id="models"></select>
+            <button type="submit" id="load-button" disabled>Confirm</button>
+        </div>
     </form>
 
     <div id="notifications" class="notifications"></div>
@@ -66,6 +70,7 @@
     <script src="js/choice.js"></script>
     <script src="js/ai.js"></script>
     <script src="js/notification.js"></script>
+    <script src="js/loadAnim.js"></script>
 </body>
 <!-- тут был syirezz -->
 <!-- here was justablock too -->

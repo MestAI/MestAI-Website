@@ -23,9 +23,9 @@ async function fetchAndGetReqModels() {
 
 async function populateDropdown() {
 	document.getElementById('models').disabled = true;
-	document.getElementById('load-button').disabled = true;
-	document.getElementById('load-button').textContent = 'Loading...';
 	const models = await fetchAndGetReqModels();
+	document.getElementById('load-text').remove();
+	document.getElementById('modelsForm').style.display = 'block';
 	document.getElementById('load-button').disabled = false;
 	document.getElementById('load-button').textContent = 'Load';
 	let selectedModel = localStorage.getItem('choice');
@@ -65,6 +65,7 @@ document.getElementById('chat-form').addEventListener('submit', async function (
 		botResponse = convertMarkdown(botResponse);
 		EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
 	} catch (error) {
+		EditMessage(document.querySelector(".ai-message:last-child"), `<img src='./imgs/cross.png', alt='❌' width='16px'> Oops... We got an error: ${error}`);
 		TimeNotification(10, "Error", `Error: ${error}`);
 		console.error("Error:", error);
 	}

@@ -9,7 +9,7 @@ body {
     color: white;
 }
 
-#choice {
+#choice{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,8 +19,9 @@ body {
     height: 200px;
     width: 300px;
     margin: auto;
-    border-radius: 30px !important;
+    border-radius: 30px;
 }
+
 
 .title-bar {
     background-color: #292524;
@@ -198,6 +199,9 @@ footer {
 
 #modelsForm {
     display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {

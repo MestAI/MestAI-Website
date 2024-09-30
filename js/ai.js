@@ -27,7 +27,7 @@ async function populateDropdown() {
     document.getElementById('models').disabled = true;
     const models = await fetchAndGetReqModels();
     document.getElementById('load-text').remove();
-    document.getElementById('modelsForm').style.display = 'block';
+    document.getElementById('modelsForm').style.display = 'flex';
     document.getElementById('load-button').disabled = false;
     document.getElementById('load-button').textContent = 'Load';
     let selectedModel = localStorage.getItem('choice');

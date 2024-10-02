@@ -27,9 +27,11 @@
     <form id="choice">
         <p id="load-text">Loading</p>
         <div id="modelsForm">
-            <label for="models">Choose a model:</label>
-            <select id="models"></select><br>
+            <label for="models">Search for a model:</label>
+            <input type="search" id="models" list="modelsList"><br>
             <button type="submit" id="load-button" disabled>Confirm</button>
+
+            <datalist id="modelsList"></datalist>
         </div>
     </form>
 

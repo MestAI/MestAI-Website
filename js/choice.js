@@ -2,21 +2,14 @@ document.getElementById('choice').addEventListener('submit', function(event) {
 	event.preventDefault();
 	const selectedModel = document.getElementById('models').value;
 	localStorage.setItem('choice', selectedModel);
-	document.getElementById('choice').remove();
-    document.getElementById('chat-form').style.display = 'flex';
+	document.getElementById('choice').style.display = 'none';
+	document.getElementById('chat-form').style.display = 'flex';
+	console.log(`Selected model: ${selectedModel}`);
 });
 
 function chatHide() {
-    document.getElementById("chat-form").style.display = "none";
-    }
+    document.getElementById("chat-form").style.display ="none";
+}
 
-    document.getElementById('choice').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const selectedModel = document.getElementById('models').value;
-    localStorage.setItem('choice', selectedModel);
-    document.getElementById('choice').style.display = 'none'; // Hide the choice form
-    document.getElementById('chat-form').style.display = 'block'; // Unhide the chat-form
-    });
+chatHide();
 
-
-chatHide(); // Call the chatHide function to initially hide the chat-form

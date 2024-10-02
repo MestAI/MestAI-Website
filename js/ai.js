@@ -1,4 +1,5 @@
 const api_url = 'https://proxy.mubilop.tech/v1/chat/completions';
+let models = [];
 
 let conversationHistory = [];
 
@@ -15,6 +16,7 @@ async function fetchAndGetReqModels() {
             if (model.type !== "chat.completions") return;
             models.push({ text: model.id, value: model.id });
         });
+        models.sort((a, b) => a.text.localeCompare(b.text));
         return models;
     } catch (error) {
         TimeNotification(10, "Error", `Error fetching models: ${error}`);
@@ -32,8 +34,9 @@ async function populateDropdown() {
     document.getElementById('load-button').textContent = 'Load';
     let selectedModel = localStorage.getItem('choice');
     const modelOptions = models.map(model => `<option value="${model.value}" ${selectedModel === model.value ? 'selected' : ''}>${model.text}</option>`).join('');
-    document.getElementById('models').innerHTML = modelOptions;
+    document.getElementById('modelsList').innerHTML = modelOptions;
     document.getElementById('models').disabled = false;
+    document.getElementById('models').focus();
 }
 
 window.onload = populateDropdown;

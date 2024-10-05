@@ -148,6 +148,18 @@ footer {
     right: 30px;
     text-align: right;
     font-size: 14px;
+
+    a {
+        color: #00ffea;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    a:hover {
+        color: #00c0b0;
+        text-decoration: underline;
+        transition: all 0.3s ease-in-out;
+    }
 }
 
 .notifications {

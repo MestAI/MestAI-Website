@@ -17,6 +17,8 @@ async function fetchAndGetReqModels() {
             models.push({ text: model.id, value: model.id });
         });
         models.sort((a, b) => a.text.localeCompare(b.text));
+
+        document.getElementById('totalModelsCount').textContent = models.length;
         return models;
     } catch (error) {
         TimeNotification(10, "Error", `Error fetching models: ${error}`);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>MestAI</title>
@@ -7,31 +7,38 @@
     <link rel="icon" type="image/x-icon" href="/imgs/favicon.ico" />
     <link rel="stylesheet" href="css/index.css" />
     <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
-    <div class="title-bar">
-        <h1 class="title">MestAI</h1>
-        <h6 style="margin-top: -10px; margin-bottom: 20px">
-            AI needs to be free.
-        </h6>
-    </div>
-    <!-- <a href="docs/index.html" style="float: left;">Docs</a> -->
-    <meta name="keywords"
-        content="AI, GPT, ChatGPT, Llama, Mest, MestAI, OpenAI, Copilot, MetaAI, Chat, ai, website, mestai, gpt, chatgpt, mestai.online" />
+
+    <meta name="keywords" content="AI, GPT, ChatGPT, Llama, Mest, MestAI, OpenAI, Copilot, MetaAI, Chat, ai, website, mestai, gpt, chatgpt, mestai.online" />
     <meta name="description" content="Chat with over 35+ AI models for free and no registration!" />
     <meta name="author" content="Justablock and Syirezz" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2421127293566330"
-        crossorigin="anonymous"></script>
+    
+    <script src="https://unpkg.com/i18next@21.9.2/dist/umd/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@1.4.0/i18nextHttpBackend.min.js"></script>
+    <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 
 <body>
+    <div id="language-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; display: flex; justify-content: center; align-items: center; z-index: 9999;">
+        <div style="background: white; padding: 20px; color: black; border-radius: 10px; text-align: center;">
+            <h2>Select Language</h2>
+            <button onclick="selectLanguage('en')">English</button>
+            <button onclick="selectLanguage('no')">Norwegian</button>
+        </div>
+    </div>
+
+    <div class="title-bar">
+        <h1 class="title" id="title">MestAI</h1>
+        <h6 style="margin-top: -10px; margin-bottom: 20px" id="tagline">AI needs to be free.</h6>
+    </div>
+
     <form id="choice">
         <p id="load-text">Loading</p>
         <div id="modelsForm">
-            <label for="models">Search for a model:</label>
+            <label for="models" id="label-search">Search for a model:</label>
             <input type="search" id="models" list="modelsList"><br>
-            <p>Currently available <strong id="totalModelsCount"></strong> models</p>
+            <p id="available-models">Currently available <strong id="totalModelsCount"></strong> models</p>
             <button type="submit" id="load-button" disabled>Confirm</button>
-
             <datalist id="modelsList"></datalist>
         </div>
     </form>
@@ -39,13 +46,11 @@
     <div id="notifications" class="notifications"></div>
 
     <form id="chat-form">
-        <label for="userInput">Enter your prompt:</label><br />
+        <label for="userInput" id="enter-prompt">Enter your prompt:</label><br />
         <textarea type="text" id="userInput" name="userInput" rows="4" cols="50"></textarea><br />
         <input type="submit" value="Submit" /><br /><br />
-
         <div class="chat-history"></div>
     </form>
-    
     
     <footer>
         <p>
@@ -54,22 +59,39 @@
             <a href="https://pronouns.page/@kararasenok_gd">@kararasenok_gd</a>,
             <a href="https://syirezz.nekoweb.org/">@syirezz</a>
         </p>
-        <div id="donate-button-container">
-            <div id="donate-button"></div>
-            <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
-            <script>
-                PayPal.Donation.Button({
-                    env: "production",
-                    hosted_button_id: "ESUVEZVYMCM48",
-                    image: {
-                        src: "./imgs/Support.png",
-                        alt: "Donate with PayPal button",
-                        title: "PayPal - The safer, easier way to pay online!",
-                    },
-                }).render("#donate-button");
-            </script>
-        </div>
     </footer>
+
+    <script>
+        i18next.use(i18nextHttpBackend).init({
+            lng: 'en',
+            backend: {
+                loadPath: '/locales/{{lng}}/translation.json'
+            }
+        }, function(err, t) {
+            showLanguagePopup();
+        });
+
+        function showLanguagePopup() {
+            document.getElementById('language-popup').style.display = 'flex';
+        }
+
+        function selectLanguage(lang) {
+            i18next.changeLanguage(lang, function(err, t) {
+                updateContent();
+                document.getElementById('language-popup').style.display = 'none';
+            });
+        }
+
+        function updateContent() {
+            document.getElementById('title').innerHTML = i18next.t('title');
+            document.getElementById('tagline').innerHTML = i18next.t('tagline');
+            document.getElementById('label-search').innerHTML = i18next.t('label_search');
+            document.getElementById('available-models').innerHTML = i18next.t('available_models');
+            document.getElementById('enter-prompt').innerHTML = i18next.t('enter_prompt');
+            document.getElementById('load-text').innerHTML = i18next.t('loading');
+            document.getElementById('load-button').innerHTML = i18next.t('confirm');
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@4.0.10/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -79,10 +101,5 @@
     <script src="js/notification.js"></script>
     <script src="js/loadAnim.js"></script>
 </body>
-<!-- тут была syirezz -->
-<!-- here was justablock too -->
-<!-- Здарова. На связи kararasenok_gd. Я сделал MarkDown и подсветку синтаксиса для кода :D 
-    Justablock сигма крутой 😎
-    Сайрезз тоже -->
-<!-- Well i guess this repo is 50% russian and 50% english(ooh good idea ill add translations and multiple languages:))))) -->
+
 </html>

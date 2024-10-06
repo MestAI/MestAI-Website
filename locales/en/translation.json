@@ -1,0 +1,10 @@
+{
+    "title": "MestAI",
+    "tagline": "AI needs to be free.",
+    "label_search": "Search for a model:",
+    "available_models": "Currently available models",
+    "enter_prompt": "Enter your prompt:",
+    "loading": "Loading",
+    "confirm": "Confirm"
+  }
+  

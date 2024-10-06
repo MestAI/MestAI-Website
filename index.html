@@ -19,17 +19,17 @@
 </head>
 
 <body>
-    <div id="language-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; display: flex; justify-content: center; align-items: center; z-index: 9999;">
-        <div style="background: white; padding: 20px; color: black; border-radius: 10px; text-align: center;">
-            <h2>Select Language</h2>
-            <button onclick="selectLanguage('en')">English</button>
-            <button onclick="selectLanguage('no')">Norwegian</button>
-        </div>
-    </div>
-
     <div class="title-bar">
         <h1 class="title" id="title">MestAI</h1>
         <h6 style="margin-top: -10px; margin-bottom: 20px" id="tagline">AI needs to be free.</h6>
+    </div>
+
+    <div style="margin: 10px;">
+        <label for="language-select">Select Language:</label>
+        <select id="language-select" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="no">Norwegian</option>
+        </select>
     </div>
 
     <form id="choice">
@@ -68,17 +68,12 @@
                 loadPath: '/locales/{{lng}}/translation.json'
             }
         }, function(err, t) {
-            showLanguagePopup();
+            updateContent();
         });
 
-        function showLanguagePopup() {
-            document.getElementById('language-popup').style.display = 'flex';
-        }
-
-        function selectLanguage(lang) {
+        function changeLanguage(lang) {
             i18next.changeLanguage(lang, function(err, t) {
                 updateContent();
-                document.getElementById('language-popup').style.display = 'none';
             });
         }
 

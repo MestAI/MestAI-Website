@@ -18,7 +18,8 @@ async function fetchAndGetReqModels() {
         models.sort((a, b) => a.text.localeCompare(b.text));
         const totalModelsCountElement = document.getElementById('totalModelsCount');
         if (totalModelsCountElement) {
-            totalModelsCountElement.textContent = models.length;
+            const key = models.length === 1 ? 'available_models' : 'available_models_plural';
+            totalModelsCountElement.textContent = i18next.t(key, { count: models.length });
         } else {
             console.error('Error: #totalModelsCount element not found');
         }

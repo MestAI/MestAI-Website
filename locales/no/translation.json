@@ -2,8 +2,14 @@
     "title": "MestAI",
     "tagline": "KI må være gratis.",
     "label_search": "Søk etter en modell:",
-    "available_models": "Modeller tilgjenlig:",
+    "available_models": "For øyeblikket tilgjengelig {{count}} modeller",
     "enter_prompt": "Skriv inn din forespørsel:",
-    "loading": "Laster"
-  }
-  
+    "loading": "Laster",
+    "confirm": "Bekreft",
+    "thinking": "Tenker...",
+    "error": "Feil",
+    "network_not_ok": "Nettverksresponsen var ikke ok: {{status}} {{statusText}}",
+    "fetch_error": "Feil ved henting av modeller: {{error}}",
+    "error_occurred": "Oops... Vi fikk en feil: {{error}}",
+    "selected_model": "Valgt modell"
+}

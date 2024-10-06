@@ -18,8 +18,11 @@ async function fetchAndGetReqModels() {
         models.sort((a, b) => a.text.localeCompare(b.text));
         const totalModelsCountElement = document.getElementById('totalModelsCount');
         if (totalModelsCountElement) {
-            const key = models.length === 1 ? 'available_models' : 'available_models_plural';
-            totalModelsCountElement.textContent = i18next.t(key, { count: models.length });
+            const modelCount = models.length;
+            const key = modelCount === 1 ? 'available_models' : 'available_models_plural';
+            console.log(`Total models available: ${modelCount}`);
+            totalModelsCountElement.textContent = i18next.t(key, { count: modelCount });
+            document.getElementById('available-models').innerHTML = i18next.t(key, { count: modelCount });
         } else {
             console.error('Error: #totalModelsCount element not found');
         }
@@ -30,6 +33,7 @@ async function fetchAndGetReqModels() {
         return [];
     }
 }
+
 
 async function populateDropdown() {
     try {

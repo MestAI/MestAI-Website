@@ -3,6 +3,7 @@
   "tagline": "AI needs to be free.",
   "label_search": "Search for a model:",
   "available_models": "Currently available {{count}} models",
+  "available_models_plural": "Currently available {{count}} models",
   "enter_prompt": "Enter your prompt:",
   "loading": "Loading",
   "confirm": "Confirm",

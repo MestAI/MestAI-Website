@@ -20,8 +20,7 @@ async function fetchAndGetReqModels() {
         if (totalModelsCountElement) {
             const modelCount = models.length;
             const key = modelCount === 1 ? 'available_models' : 'available_models_plural';
-            console.log(`Total models available: ${modelCount}`);
-            totalModelsCountElement.textContent = i18next.t(key, { count: modelCount });
+            totalModelsCountElement.textContent = modelCount;  // Just display the count in the strong element
             document.getElementById('available-models').innerHTML = i18next.t(key, { count: modelCount });
         } else {
             console.error('Error: #totalModelsCount element not found');

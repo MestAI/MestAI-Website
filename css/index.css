@@ -142,12 +142,16 @@ body {
     text-align: right;
 }
 
-footer {
+#footertop {
     position: fixed;
     top: 10px;
     right: 30px;
     text-align: right;
     font-size: 14px;
+    background-color: #443a37;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
 
     a {
         color: #00ffea;

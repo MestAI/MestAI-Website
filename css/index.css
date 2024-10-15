@@ -99,9 +99,9 @@ body {
     color: white;
     z-index: 0;
     padding: 10px;
-    max-height: 80vh; /* Adjust this to ensure the chat doesn't overflow */
+    max-height: 80vh; 
     overflow-y: auto;
-    padding-bottom: 100px; /* Adds space for the footer */
+    padding-bottom: 100px; 
     margin: 20px;
     width: 75%;
 }
@@ -152,24 +152,28 @@ body {
     padding: 10px;
     border: 2px solid gray;
     border-radius: 10px;
+    z-index: 10; 
+}
 
-    a {
-        color: #00ffea;
-        text-decoration: none;
-        transition: all 0.3s ease-in-out;
-    }
+#footertop a {
+    color: #00ffea;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
 
-    a:hover {
-        color: #00c0b0;
-        text-decoration: underline;
-        transition: all 0.3s ease-in-out;
-    }
+#footertop a:hover {
+    color: #00c0b0;
+    text-decoration: underline;
+    transition: all 0.3s ease-in-out;
 }
 
 .notifications {
     position: fixed;
     right: 10px;
     top: 10px;
+    z-index: 100;
+    /* border: 1px solid #d15f6b; */
+    border-radius: 5px;
 }
 
 .notification {
@@ -177,6 +181,21 @@ body {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+    border: 5px solid #d15f6b;
+}
+/* Media query for mobile devices */
+@media (max-width: 600px) {
+    #footertop {
+        position: static;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .notifications {
+        top: 10px;
+        width: 90%;
+    }
 }
 
 .copy-button {

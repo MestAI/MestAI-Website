@@ -49,10 +49,18 @@ document.getElementById('chat-form').addEventListener('submit', async function (
     AppendHistory(userInput, false);
     AppendHistory(" <img src='./imgs/loading.gif'> Thinking...", true);
     const selectedModel = localStorage.getItem('choice');
-    const messages = [{ role: "user", content: userInput }];
+
+    const customPrompt = "Hi, you are an AI chatbot on website called MestAI. Developers are justablock, syirezz and kararasenok_gd. Answer user on language they speak on to you:) Also when user gets your answer, user gets it in markdown format so you can easily answer user with for example **bold text** or code by using markdown features. Here is chat history with user(if its empty then there must have been error) so you can understand what happens because you have no memory feature: ";
+
+    const messages = [
+        { role: "system", content: customPrompt },
+        ...conversationHistory, // Include the entire conversation history
+        { role: "user", content: userInput }
+    ];
+
     conversationHistory.push({ role: "user", content: userInput });
 
-	document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = true;
+    document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = true;
 
     try {
         const response = await fetch(api_url, {
@@ -64,7 +72,7 @@ document.getElementById('chat-form').addEventListener('submit', async function (
             },
             body: JSON.stringify({
                 model: selectedModel,
-                messages: conversationHistory
+                messages: messages
             }),
         });
         if (!response.ok) {
@@ -74,16 +82,16 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         const data = await response.json();
         let botResponse = data.choices[0].message.content;
         botResponse = convertMarkdown(botResponse);
-        conversationHistory.push({ role: "assistant", content: botResponse });
+        conversationHistory.push({ role: "assistant", content: botResponse }); // Add AI response to history
 
         EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
     } catch (error) {
         EditMessage(document.querySelector(".ai-message:last-child"), `<img src='./imgs/cross.png', alt='❌' width='16px'> Oops... We got an error: ${error}`);
         TimeNotification(10, "Error", `Error: ${error}`);
         console.error("Error:", error);
-    } finally{
-		document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = false;
-	}
+    } finally {
+        document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = false;
+    }
 });
 
 function convertMarkdown(text) {

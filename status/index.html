@@ -1,0 +1,59 @@
+<head>
+    <title>MestAI - Status page.</title>
+    <link rel="icon" type="image/x-icon" href="../imgs/favicon.ico" />
+    <link rel="stylesheet" href="../css/index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="title-bar">
+        <h1 class="title"><a href="../index.html" style="text-decoration: none; color: inherit;">MestAI</a> <span class="status-link-container"><a href="../status/index.html" class="status-link">Status</a></span></h1>
+        <h6 style="margin-top: -10px; margin-bottom: 20px">
+            AI should be free.
+        </h6>
+    </div>
+    
+    <footer id="footertop">
+        <p>
+            This site is made by:
+            <a href="https://linktr.ee/justablock">@justablock_</a>,
+            <a href="https://pronouns.page/@kararasenok_gd">@kararasenok_gd</a>,
+            <a href="https://syirezz.nekoweb.org/">@syirezz</a>
+        </p>
+        <div id="donate-button-container">
+            <div id="donate-button"></div>
+            <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+            <script>
+                PayPal.Donation.Button({
+                    env: "production",
+                    hosted_button_id: "ESUVEZVYMCM48",
+                    image: {
+                        src: "../imgs/Support.png",
+                        alt: "Donate with PayPal button",
+                        title: "PayPal - The safer, easier way to pay online!",
+                    },
+                }).render("#donate-button");
+            </script>
+        </div>
+    </footer>
+    
+    <footer>
+        <div id="model-status">
+            <h2>Model Status Check</h2>
+            <ul id="model-status-list"></ul>
+        </div>
+    </footer>
+
+    <!-- Adsterra Ads -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '594c333c86fe5dcc7310a4dc36799a8f',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    
+    <script src="../js/status.js"></script>
+</body>

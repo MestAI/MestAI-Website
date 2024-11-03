@@ -1,4 +1,5 @@
-const api_url = 'https://proxy.mubilop.tech/v1/chat/completions';
+const api_url = 'https://penguinai.milosantos.com/v1/chat/completions';
+const image_api_url = 'https://penguinai.milosantos.com/v1/images/generations';
 let models = [];
 
 let conversationHistory = [];
@@ -50,11 +51,11 @@ document.getElementById('chat-form').addEventListener('submit', async function (
     AppendHistory(" <img src='./imgs/loading.gif'> Thinking...", true);
     const selectedModel = localStorage.getItem('choice');
 
-    const customPrompt = "Hi, you are an AI chatbot on website called MestAI. Developers are justablock, syirezz and kararasenok_gd. Answer user on language they speak on to you:) Also when user gets your answer, user gets it in markdown format so you can easily answer user with for example **bold text** or code by using markdown features. Here is chat history with user(if its empty then there must have been error) so you can understand what happens because you have no memory feature: ";
+    const customPrompt = "Hi, you are an AI chatbot on a website called MestAI. Developers are justablock, syirezz, and kararasenok_gd. Answer users in the language they speak to you. When responding, use markdown format for features like **bold text** or code. You can also request image generation by including [{GEN_IMG:\"image description\"}] in your response, then user will see your message and image after it. If you want you can include or not image in your code so you dont NEED to:). Here is the chat history with the user (if it's empty, there must have been an error) so you can understand what happens because you have no memory feature: ";
 
     const messages = [
         { role: "system", content: customPrompt },
-        ...conversationHistory, // Include the entire conversation history
+        ...conversationHistory,
         { role: "user", content: userInput }
     ];
 
@@ -81,10 +82,25 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         }
         const data = await response.json();
         let botResponse = data.choices[0].message.content;
-        botResponse = convertMarkdown(botResponse);
-        conversationHistory.push({ role: "assistant", content: botResponse }); // Add AI response to history
 
-        EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
+        const imageRequestMatch = botResponse.match(/\[\{GEN_IMG:"(.*?)"\}\]/);
+        if (imageRequestMatch) {
+            EditMessage(document.querySelector('.ai-message:last-child'), " <img src='./imgs/loading.gif'> Generating Image...");
+            const imagePrompt = imageRequestMatch[1];
+            const imageUrl = await generateImage(imagePrompt, selectedModel);
+            if (imageUrl) {
+                botResponse = botResponse.replace(imageRequestMatch[0], `<img src="${imageUrl}" alt="Generated Image" style="max-width: 100%; height: auto;">`);
+                botResponse = convertMarkdown(botResponse);
+                conversationHistory.push({ role: "assistant", content: botResponse });
+                EditMessage(document.querySelector('.ai-message:last-child'), botResponse);
+            } else {
+                EditMessage(document.querySelector('.ai-message:last-child'), "Failed to generate image.");
+            }
+        } else {
+            botResponse = convertMarkdown(botResponse);
+            conversationHistory.push({ role: "assistant", content: botResponse });
+            EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
+        }
     } catch (error) {
         EditMessage(document.querySelector(".ai-message:last-child"), `<img src='./imgs/cross.png', alt='❌' width='16px'> Oops... We got an error: ${error}`);
         TimeNotification(10, "Error", `Error: ${error}`);
@@ -93,6 +109,33 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = false;
     }
 });
+
+async function generateImage(prompt, model) {
+    try {
+        const response = await fetch(image_api_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: model,
+                prompt: prompt
+            })
+        });
+        if (!response.ok) {
+            console.error(`Image generation response was not ok: ${response.status} ${response.statusText}`);
+            return null;
+        }
+        const data = await response.json();
+        console.log("Image generation response data:", data); // Debugging line
+
+        const imageUrl = data.data[0].url;
+        return imageUrl;
+    } catch (error) {
+        console.error("Error generating image:", error);
+        return null;
+    }
+}
 
 function convertMarkdown(text) {
     let htmlOutput = marked.parse(text);
@@ -105,4 +148,3 @@ function convertMarkdown(text) {
 
     return tempDiv.innerHTML;
 }
-// sigma

@@ -284,3 +284,101 @@ body {
         width: 100%;
     }
 }
+
+#model-status-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    color: white;
+    font-family: Outfit, sans-serif;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#model-status-table th, #model-status-table td {
+    padding: 12px 20px;
+    text-align: left;
+}
+
+#model-status-table th {
+    background-color: #443a37;
+    color: #00ffea;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+#model-status-table tr:nth-child(even) {
+    background-color: #292524;
+}
+
+#model-status-table tr:nth-child(odd) {
+    background-color: #0C0A09;
+}
+
+#model-status-table td {
+    background-color: #292524;
+    color: #f0e8e6;
+    border-bottom: 1px solid #5c4f4c;
+}
+
+#model-status-table td span {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+#model-status-table td span:before {
+    content: '• ';
+    font-weight: bold;
+}
+
+#model-status-table td span.status-ok {
+    color: #00c851;
+}
+
+#model-status-table td span.status-error {
+    color: #ff4444;
+}
+
+#model-status-table td.status-checking span {
+    color: #ffbb33;
+}
+
+#model-status-table th:first-child, 
+#model-status-table td:first-child {
+    padding-left: 30px;
+}
+
+#model-status-table th:last-child, 
+#model-status-table td:last-child {
+    padding-right: 30px;
+}
+
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #443a37;
+    color: #00ffea;
+    font-family: Outfit, sans-serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background-color: #00ffea;
+    color: #443a37;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+}
+
+button:active {
+    transform: scale(0.95);
+    transition: all 0.3s ease-in-out;
+}

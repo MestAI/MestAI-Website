@@ -1,8 +1,9 @@
-const api_url = 'https://penguinai.milosantos.com/v1/chat/completions';
+const api_url_models = 'https://penguinai.milosantos.com/v1/models';
+const api_url_model_status = 'https://penguinai.milosantos.com/v1/api/working?model=';
 
 async function fetchAndGetReqModels() {
     try {
-        const response = await fetch(api_url.replace('/chat/completions', '/models'));
+        const response = await fetch(api_url_models);
         if (!response.ok) {
             console.error(`Network response was not ok: ${response.status} ${response.statusText}`);
             return [];
@@ -68,30 +69,22 @@ async function checkModelStatus(models) {
         const statusCell = document.getElementById(`status-${model.value}`);
 
         try {
-            const response = await fetch(api_url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: model.value,
-                    messages: [{ role: "user", content: "hi" }]
-                }),
-            });
+            const response = await fetch(api_url_model_status + model.value);
+            const data = await response.text();
 
             checked++;
 
-            if (response.ok) {
-                statusCell.textContent = '✅'; // Checkmark for successful status
-                statusTextCopy += `${model.text} >> ✅\n`;
+            if (data == "True") {
+                statusCell.textContent = '✅ Up'; // Checkmark for successful status
+                statusTextCopy += `${model.text} >> ✅ Up\n`;
             } else {
-                statusCell.textContent = `❌ Error: ${response.status} ${response.statusText}`;
-                statusTextCopy += `${model.text} >> ❌ Error: ${response.status} ${response.statusText}\n`;
+                statusCell.textContent = `❌ Down`;
+                statusTextCopy += `${model.text} >> ❌ Down\n`;
                 failed++;
             }
         } catch (error) {
-            statusCell.textContent = `❌ Error: ${error.message}`;
-            statusTextCopy += `${model.text} >> ❌ Error: ${error.message}\n`;
+            statusCell.textContent = `❌ Error: ${error}`;
+            statusTextCopy += `${model.text} >> ❌ Error: ${error}\n`;
             failed++;
         }
 

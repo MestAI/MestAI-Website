@@ -1,5 +1,5 @@
 const api_url_models = 'https://penguinai.milosantos.com/v1/models';
-const api_url_model_status = 'https://penguinai.milosantos.com/v1/api/working?model=';
+const api_url_chat_completions = 'https://penguinai.milosantos.com/v1/chat/completions';
 
 async function fetchAndGetReqModels() {
     try {
@@ -55,48 +55,57 @@ async function displayModels() {
         statusTable.appendChild(row);
     });
 
-    checkModelStatus(models);
+    checkModelStatusInBatches(models);
 }
 
-async function checkModelStatus(models) {
+async function checkModelStatusInBatches(models) {
+    const batchSize = 5;
     let failed = 0;
     let checked = 0;
-    let total = models.length;
+    const total = models.length;
     const statusText = document.getElementById('model-status-progress');
     let statusTextCopy = "Models Status:\n";
-    const updateInterval = 5; // Update status text after every 5 models
 
-    for (const [index, model] of models.entries()) {
-        const statusCell = document.getElementById(`status-${model.value}`);
+    for (let i = 0; i < total; i += batchSize) {
+        const batch = models.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (model) => {
+            const statusCell = document.getElementById(`status-${model.value}`);
+            try {
+                const response = await fetch(api_url_chat_completions, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: model.value,
+                        messages: [{ role: "user", content: "hi" }]
+                    }),
+                });
 
-        try {
-            const response = await fetch(api_url_model_status + model.value);
-            const data = await response.text();
+                checked++;
 
-            checked++;
-
-            if (data === "True") {
-                statusCell.textContent = '✅ Up'; // Checkmark for successful status
-                statusTextCopy += `${model.text} >> ✅ Up\n`;
-            } else {
-                statusCell.textContent = '❌ Down';
-                statusTextCopy += `${model.text} >> ❌ Down\n`;
+                if (response.ok) {
+                    statusCell.textContent = '✅ Up'; // Checkmark for successful status
+                    statusTextCopy += `${model.text} >> ✅ Up\n`;
+                } else {
+                    statusCell.textContent = `❌ Down`;
+                    statusTextCopy += `${model.text} >> ❌ Down\n`;
+                    failed++;
+                }
+            } catch (error) {
+                const errorMessage = error.message || 'Unknown error';
+                statusCell.textContent = `❌ Error: ${errorMessage}`;
+                statusTextCopy += `${model.text} >> ❌ Error: ${errorMessage}\n`;
                 failed++;
             }
-        } catch (error) {
-            const errorMessage = error.message || 'Unknown error';
-            statusCell.textContent = `❌ Error: ${errorMessage}`;
-            statusTextCopy += `${model.text} >> ❌ Error: ${errorMessage}\n`;
-            failed++;
-        }
+        }));
 
-        if ((index + 1) % updateInterval === 0 || checked === total) {
-            let successfulProc = Math.round(((total - failed) / total) * 100);
-            let failedProc = Math.round((failed / total) * 100);
-            let checkedProc = Math.round((checked / total) * 100);
-            statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
-        }
+        let successfulProc = Math.round(((total - failed) / total) * 100);
+        let failedProc = Math.round((failed / total) * 100);
+        let checkedProc = Math.round((checked / total) * 100);
+        statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
     }
+
     statusTextCopy += `\nTotal models: ${total} | Checked: ${checked} | Successful: ${total - failed} | Failed: ${failed}`;
     statusTextCopy += "\nCheck again here: https://mestai.online/status/";
 

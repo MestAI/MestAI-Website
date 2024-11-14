@@ -94,7 +94,7 @@ async function checkModelStatus(models) {
         statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
     }
     statusTextCopy += `\nTotal models: ${total} | Checked: ${checked} | Successful: ${total - failed} | Failed: ${failed}`;
-    // statusTextCopy += "\nCheck again here: https://mestai.online/status/";
+    statusTextCopy += "\nCheck again here: https://mestai.online/status/";
 
     statusText.innerHTML = `${statusText.innerHTML}<br><br><button onclick="copyText(\`${statusTextCopy}\`)">Copy result</button>`;
 }

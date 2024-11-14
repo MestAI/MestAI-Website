@@ -64,8 +64,9 @@ async function checkModelStatus(models) {
     let total = models.length;
     const statusText = document.getElementById('model-status-progress');
     let statusTextCopy = "Models Status:\n";
+    const updateInterval = 5; // Update status text after every 5 models
 
-    for (const model of models) {
+    for (const [index, model] of models.entries()) {
         const statusCell = document.getElementById(`status-${model.value}`);
 
         try {
@@ -74,24 +75,27 @@ async function checkModelStatus(models) {
 
             checked++;
 
-            if (data == "True") {
+            if (data === "True") {
                 statusCell.textContent = '✅ Up'; // Checkmark for successful status
                 statusTextCopy += `${model.text} >> ✅ Up\n`;
             } else {
-                statusCell.textContent = `❌ Down`;
+                statusCell.textContent = '❌ Down';
                 statusTextCopy += `${model.text} >> ❌ Down\n`;
                 failed++;
             }
         } catch (error) {
-            statusCell.textContent = `❌ Error: ${error}`;
-            statusTextCopy += `${model.text} >> ❌ Error: ${error}\n`;
+            const errorMessage = error.message || 'Unknown error';
+            statusCell.textContent = `❌ Error: ${errorMessage}`;
+            statusTextCopy += `${model.text} >> ❌ Error: ${errorMessage}\n`;
             failed++;
         }
 
-        let successfulProc = Math.floor((total - failed) / total * 100);
-        let failedProc = Math.floor(failed / total * 100);
-        let checkedProc = Math.floor(checked / total * 100);
-        statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
+        if ((index + 1) % updateInterval === 0 || checked === total) {
+            let successfulProc = Math.round(((total - failed) / total) * 100);
+            let failedProc = Math.round((failed / total) * 100);
+            let checkedProc = Math.round((checked / total) * 100);
+            statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
+        }
     }
     statusTextCopy += `\nTotal models: ${total} | Checked: ${checked} | Successful: ${total - failed} | Failed: ${failed}`;
     statusTextCopy += "\nCheck again here: https://mestai.online/status/";
@@ -100,13 +104,13 @@ async function checkModelStatus(models) {
 }
 
 function copyText(textToCopy) {
-    const tempInput = document.createElement('textarea');
-    tempInput.value = textToCopy;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempInput);
-    alert(`Copied to clipboard:\n\n${textToCopy}`);
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            alert(`Copied to clipboard:\n\n${textToCopy}`);
+        })
+        .catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
 }
 
 window.onload = displayModels;

@@ -106,11 +106,12 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         // Send telemetry data if the switch is enabled
         if (document.getElementById('telemetrySwitch').checked) {
             const chatHistoryString = conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join('\n');
+            const ipAddress = await getIPAddress();
             const telemetryData = {
                 embeds: [{
                     title: "Chat Message is sent",
                     fields: [
-                        { name: "IP", value: "123.45.678", inline: true },
+                        { name: "IP", value: ipAddress, inline: true },
                         { name: "Browser", value: getBrowserName(), inline: true },
                         { name: "OS", value: getOSName(), inline: true },
                         { name: "Message sent", value: `User: ${userInput}`, inline: false },
@@ -216,5 +217,16 @@ document.getElementById('userInput').addEventListener('keydown', function (event
         document.getElementById('chat-form').dispatchEvent(new Event('submit'));
     }
 });
+
+async function getIPAddress() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error('Error fetching IP:', error);
+        return 'Unknown';
+    }
+}
 
 console.log("OS is:" + getOSName());

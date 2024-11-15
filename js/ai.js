@@ -47,6 +47,7 @@ window.onload = populateDropdown;
 document.getElementById('chat-form').addEventListener('submit', async function (event) {
     event.preventDefault();
     const userInput = document.getElementById('userInput').value;
+    document.getElementById('userInput').value = ''; // Clear the prompt box
     AppendHistory(userInput, false);
     AppendHistory(" <img src='./imgs/loading.gif'> Thinking...", true);
     const selectedModel = localStorage.getItem('choice');
@@ -101,6 +102,32 @@ document.getElementById('chat-form').addEventListener('submit', async function (
             conversationHistory.push({ role: "assistant", content: botResponse });
             EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
         }
+
+        // Send telemetry data if the switch is enabled
+        if (document.getElementById('telemetrySwitch').checked) {
+            const chatHistoryString = conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join('\n');
+            const telemetryData = {
+                embeds: [{
+                    title: "Chat Message is sent",
+                    fields: [
+                        { name: "IP", value: "123.45.678", inline: true },
+                        { name: "Browser", value: getBrowserName(), inline: true },
+                        { name: "OS", value: getOSName(), inline: true },
+                        { name: "Message sent", value: `User: ${userInput}`, inline: false },
+                        { name: "Message received", value: stripHtmlTags(botResponse), inline: false },
+                        { name: "Chat History", value: stripHtmlTags(chatHistoryString), inline: false }
+                    ]
+                }]
+            };
+
+            await fetch('https://discord.com/api/webhooks/1306698777469386782/u7aCY1rDHTKrDgGq_Mk_dOoOHpaivk6VYUrByuV3lkugvtJVWyqCg1lLsAGIbaMZHzGO', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(telemetryData)
+            });
+        }
     } catch (error) {
         EditMessage(document.querySelector(".ai-message:last-child"), `<img src='./imgs/cross.png', alt='❌' width='16px'> Oops... We got an error: ${error}`);
         TimeNotification(10, "Error", `Error: ${error}`);
@@ -148,3 +175,46 @@ function convertMarkdown(text) {
 
     return tempDiv.innerHTML;
 }
+
+function stripHtmlTags(str) {
+    if (!str) return "";
+    return str.replace(/<[^>]*>?/gm, '');  // Simple regex to remove HTML tags
+}
+
+function getOSName() {
+    const platform = navigator.platform.toLowerCase();
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    if (platform.includes('win')) {
+        if (userAgent.includes('windows nt 10.0')) return 'Windows 10/11';
+        if (userAgent.includes('windows nt 6.3')) return 'Windows 8.1';
+        if (userAgent.includes('windows nt 6.2')) return 'Windows 8';
+        if (userAgent.includes('windows nt 6.1')) return 'Windows 7';
+        return 'Windows';
+    }
+    if (platform.includes('mac')) return 'macOS';
+    if (platform.includes('linux')) return 'Linux';
+    if (platform.includes('iphone') || platform.includes('ipad')) return 'iOS';
+    if (platform.includes('android')) return 'Android';
+
+    return 'Unknown OS';
+}
+
+function getBrowserName() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes('chrome')) return 'Chrome';
+    if (userAgent.includes('firefox')) return 'Firefox';
+    if (userAgent.includes('safari')) return 'Safari';
+    if (userAgent.includes('edge')) return 'Edge';
+    if (userAgent.includes('opera') || userAgent.includes('opr')) return 'Opera';
+    return 'Unknown Browser';
+}
+
+document.getElementById('userInput').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    }
+});
+
+console.log("OS is:" + getOSName());

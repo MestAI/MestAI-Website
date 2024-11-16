@@ -84,6 +84,7 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         const data = await response.json();
         let botResponse = data.choices[0].message.content;
 
+        let imageGenerated = false;
         const imageRequestMatch = botResponse.match(/\[\{GEN_IMG:"(.*?)"\}\]/);
         if (imageRequestMatch) {
             EditMessage(document.querySelector('.ai-message:last-child'), " <img src='./imgs/loading.gif'> Generating Image...");
@@ -91,17 +92,15 @@ document.getElementById('chat-form').addEventListener('submit', async function (
             const imageUrl = await generateImage(imagePrompt, selectedModel);
             if (imageUrl) {
                 botResponse = botResponse.replace(imageRequestMatch[0], `<img src="${imageUrl}" alt="Generated Image" style="max-width: 100%; height: auto;">`);
-                botResponse = convertMarkdown(botResponse);
-                conversationHistory.push({ role: "assistant", content: botResponse });
-                EditMessage(document.querySelector('.ai-message:last-child'), botResponse);
+                imageGenerated = true;
             } else {
-                EditMessage(document.querySelector('.ai-message:last-child'), "Failed to generate image.");
+                botResponse = botResponse.replace(imageRequestMatch[0], "Failed to generate image.");
             }
-        } else {
-            botResponse = convertMarkdown(botResponse);
-            conversationHistory.push({ role: "assistant", content: botResponse });
-            EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
         }
+
+        botResponse = convertMarkdown(botResponse);
+        conversationHistory.push({ role: "assistant", content: botResponse });
+        EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
 
         // Send telemetry data if the switch is enabled
         if (document.getElementById('telemetrySwitch').checked) {
@@ -116,6 +115,7 @@ document.getElementById('chat-form').addEventListener('submit', async function (
                         { name: "OS", value: getOSName(), inline: true },
                         { name: "Message sent", value: `User: ${userInput}`, inline: false },
                         { name: "Message received", value: stripHtmlTags(botResponse), inline: false },
+                        { name: "Image Generated", value: imageGenerated ? "Yes" : "No", inline: true },
                         { name: "Chat History", value: stripHtmlTags(chatHistoryString), inline: false }
                     ]
                 }]
@@ -146,7 +146,7 @@ async function generateImage(prompt, model) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: model,
+                model: "dall-e-3", 
                 prompt: prompt
             })
         });

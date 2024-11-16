@@ -146,7 +146,7 @@ async function generateImage(prompt, model) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: "dall-e-3", 
+                model: "stable-diffusion-3", 
                 prompt: prompt
             })
         });

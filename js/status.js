@@ -1,5 +1,5 @@
-const api_url_models = 'https://penguinai.milosantos.com/v1/models';
-const api_url_chat_completions = 'https://penguinai.milosantos.com/v1/chat/completions';
+const api_url_models = 'https://penguinai.abby.is-a.dev/v1/models';
+const api_url_chat_completions = 'https://penguinai.abby.is-a.dev/v1/chat/completions';
 
 async function fetchAndGetReqModels() {
     try {

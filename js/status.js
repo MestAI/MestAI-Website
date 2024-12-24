@@ -59,46 +59,45 @@ async function displayModels() {
 }
 
 async function checkModelStatusInBatches(models) {
-    const batchSize = 5;
+    const batchSize = 1; // Since the rate limit is 1 request every 5 seconds, process models sequentially
+    const delay = 5000; // 5 seconds in milliseconds
     let failed = 0;
     let checked = 0;
     const total = models.length;
     const statusText = document.getElementById('model-status-progress');
     let statusTextCopy = "Models Status:\n";
 
-    for (let i = 0; i < total; i += batchSize) {
-        const batch = models.slice(i, i + batchSize);
-        await Promise.all(batch.map(async (model) => {
-            const statusCell = document.getElementById(`status-${model.value}`);
-            try {
-                const response = await fetch(api_url_chat_completions, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        model: model.value,
-                        messages: [{ role: "user", content: "hi" }]
-                    }),
-                });
+    for (let i = 0; i < total; i++) {
+        const model = models[i];
+        const statusCell = document.getElementById(`status-${model.value}`);
+        try {
+            const response = await fetch(api_url_chat_completions, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: model.value,
+                    messages: [{ role: "user", content: "hi" }]
+                }),
+            });
 
-                checked++;
+            checked++;
 
-                if (response.ok) {
-                    statusCell.textContent = '✅ Up'; // Checkmark for successful status
-                    statusTextCopy += `${model.text} >> ✅ Up\n`;
-                } else {
-                    statusCell.textContent = `❌ Down`;
-                    statusTextCopy += `${model.text} >> ❌ Down\n`;
-                    failed++;
-                }
-            } catch (error) {
-                const errorMessage = error.message || 'Unknown error';
-                statusCell.textContent = `❌ Error: ${errorMessage}`;
-                statusTextCopy += `${model.text} >> ❌ Error: ${errorMessage}\n`;
+            if (response.ok) {
+                statusCell.textContent = '✅ Up'; // Checkmark for successful status
+                statusTextCopy += `${model.text} >> ✅ Up\n`;
+            } else {
+                statusCell.textContent = `❌ Down`;
+                statusTextCopy += `${model.text} >> ❌ Down\n`;
                 failed++;
             }
-        }));
+        } catch (error) {
+            const errorMessage = error.message || 'Unknown error';
+            statusCell.textContent = `❌ Error: ${errorMessage}`;
+            statusTextCopy += `${model.text} >> ❌ Error: ${errorMessage}\n`;
+            failed++;
+        }
 
         let successfulProc = Math.round(((total - failed) / total) * 100);
         let failedProc = Math.round((failed / total) * 100);

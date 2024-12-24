@@ -1,5 +1,5 @@
-const api_url = 'https://penguinai.derpygamer2142.com/v1/chat/completions';
-const image_api_url = 'https://penguinai.derpygamer2142.com/v1/images/generations';
+const api_url = 'https://api.penguinai.tech/v1/chat/completions';
+const image_api_url = 'https://api.penguinai.tech/v1/images/generations';
 let models = [];
 
 let conversationHistory = [];

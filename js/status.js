@@ -59,8 +59,8 @@ async function displayModels() {
 }
 
 async function checkModelStatusInBatches(models) {
-    const batchSize = 1; // Since the rate limit is 1 request every 5 seconds, process models sequentially
-    const delay = 5000; // 5 seconds in milliseconds
+    const batchSize = 1; // Process models one at a time
+    const delay = 5100; // 5 seconds in milliseconds
     let failed = 0;
     let checked = 0;
     const total = models.length;
@@ -70,6 +70,7 @@ async function checkModelStatusInBatches(models) {
     for (let i = 0; i < total; i++) {
         const model = models[i];
         const statusCell = document.getElementById(`status-${model.value}`);
+
         try {
             const response = await fetch(api_url_chat_completions, {
                 method: 'POST',
@@ -103,6 +104,11 @@ async function checkModelStatusInBatches(models) {
         let failedProc = Math.round((failed / total) * 100);
         let checkedProc = Math.round((checked / total) * 100);
         statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
+
+        // Add delay between requests
+        if (i < total - 1) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
     }
 
     statusTextCopy += `\nTotal models: ${total} | Checked: ${checked} | Successful: ${total - failed} | Failed: ${failed}`;
@@ -110,6 +116,7 @@ async function checkModelStatusInBatches(models) {
 
     statusText.innerHTML = `${statusText.innerHTML}<br><br><button onclick="copyText(\`${statusTextCopy}\`)">Copy result</button>`;
 }
+
 
 function copyText(textToCopy) {
     navigator.clipboard.writeText(textToCopy)

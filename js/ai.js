@@ -44,8 +44,23 @@ async function populateDropdown() {
 
 window.onload = populateDropdown;
 
+// Utility function to introduce a delay
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+let lastMessageTime = 0; // Track the time of the last message sent
 document.getElementById('chat-form').addEventListener('submit', async function (event) {
     event.preventDefault();
+    const currentTime = Date.now();
+    const timeSinceLastMessage = currentTime - lastMessageTime;
+
+    if (timeSinceLastMessage < 5000) { // Check if less than 5 seconds have passed
+        TimeNotification(5, "Warning", "You are sending messages too fast. Please wait a moment.");
+        return;
+    }
+
+    lastMessageTime = currentTime; // Update the last message time
+
     const userInput = document.getElementById('userInput').value;
     document.getElementById('userInput').value = ''; // Clear the prompt box
     AppendHistory(userInput, false);
@@ -74,21 +89,53 @@ document.getElementById('chat-form').addEventListener('submit', async function (
             },
             body: JSON.stringify({
                 model: selectedModel,
-                messages: messages
+                messages: messages,
+                stream: document.getElementById('streamingSwitch').checked // Include streaming option in the request
             }),
         });
+
         if (!response.ok) {
             TimeNotification(10, "Error", `Network response was not ok: ${response.status} ${response.statusText}`);
             throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
         }
-        const data = await response.json();
-        let botResponse = data.choices[0].message.content;
 
+        let botResponse = '';
+        // Check if streaming is enabled
+        if (document.getElementById('streamingSwitch').checked) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.trim().startsWith('data:')) {
+                        const data = line.replace('data: ', '').trim();
+                        if (data === '[DONE]') break;
+                        const parsedData = JSON.parse(data);
+                        const content = parsedData.choices[0].delta.content || '';
+                        botResponse += content;
+                        EditMessage(document.querySelector(".ai-message:last-child"), convertMarkdown(botResponse));
+                    }
+                }
+            }
+        } else {
+            const data = await response.json();
+            botResponse = data.choices[0].message.content;
+            botResponse = convertMarkdown(botResponse);
+            conversationHistory.push({ role: "assistant", content: botResponse });
+            EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
+        }
+
+        // Handle image generation after the message is complete
         let imageGenerated = false;
         const imageRequestMatch = botResponse.match(/\[\{GEN_IMG:"(.*?)"\}\]/);
         if (imageRequestMatch) {
             EditMessage(document.querySelector('.ai-message:last-child'), " <img src='./imgs/loading.gif'> Generating Image...");
             const imagePrompt = imageRequestMatch[1];
+            await delay(5000); // Wait for 5 seconds before making the image generation request
             const imageUrl = await generateImage(imagePrompt, selectedModel);
             if (imageUrl) {
                 botResponse = botResponse.replace(imageRequestMatch[0], `<img src="${imageUrl}" alt="Generated Image" style="max-width: 100%; height: auto;">`);
@@ -96,12 +143,9 @@ document.getElementById('chat-form').addEventListener('submit', async function (
             } else {
                 botResponse = botResponse.replace(imageRequestMatch[0], "Failed to generate image.");
             }
+            EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
         }
-
-        botResponse = convertMarkdown(botResponse);
-        conversationHistory.push({ role: "assistant", content: botResponse });
-        EditMessage(document.querySelector(".ai-message:last-child"), botResponse);
-
+        
         // Send telemetry data if the switch is enabled
         if (document.getElementById('telemetrySwitch').checked) {
             const chatHistoryString = conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join('\n');
@@ -137,6 +181,10 @@ document.getElementById('chat-form').addEventListener('submit', async function (
         document.getElementById('chat-form').querySelector('input[type="submit"]').disabled = false;
     }
 });
+
+
+
+
 
 async function generateImage(prompt, model) {
     try {

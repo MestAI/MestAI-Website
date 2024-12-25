@@ -1,5 +1,5 @@
 const api_url_models = 'https://api.penguinai.tech/v1/models';
-const api_url_chat_completions = 'https://api.penguinai.tech/v1/chat/completions';
+const api_url_working = 'https://api.penguinai.tech/v1/api/working';
 
 async function fetchAndGetReqModels() {
     try {
@@ -55,41 +55,30 @@ async function displayModels() {
         statusTable.appendChild(row);
     });
 
-    checkModelStatusInBatches(models);
+    checkModelStatuses(models);
 }
 
-async function checkModelStatusInBatches(models) {
-    const batchSize = 1; // Process models one at a time
-    const delay = 5100; // 5 seconds in milliseconds
+async function checkModelStatuses(models) {
     let failed = 0;
     let checked = 0;
     const total = models.length;
     const statusText = document.getElementById('model-status-progress');
     let statusTextCopy = "Models Status:\n";
 
-    for (let i = 0; i < total; i++) {
-        const model = models[i];
+    await Promise.all(models.map(async (model) => {
         const statusCell = document.getElementById(`status-${model.value}`);
 
         try {
-            const response = await fetch(api_url_chat_completions, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: model.value,
-                    messages: [{ role: "user", content: "hi" }]
-                }),
-            });
+            const response = await fetch(`${api_url_working}?model=${model.value}`);
+            const status = await response.text(); 
 
             checked++;
 
-            if (response.ok) {
+            if (status.trim() === 'True') {
                 statusCell.textContent = '✅ Up'; // Checkmark for successful status
                 statusTextCopy += `${model.text} >> ✅ Up\n`;
             } else {
-                statusCell.textContent = `❌ Down`;
+                statusCell.textContent = '❌ Down';
                 statusTextCopy += `${model.text} >> ❌ Down\n`;
                 failed++;
             }
@@ -104,19 +93,13 @@ async function checkModelStatusInBatches(models) {
         let failedProc = Math.round((failed / total) * 100);
         let checkedProc = Math.round((checked / total) * 100);
         statusText.textContent = `Total models: ${total} | Checked: ${checked} (${checkedProc}%) | Successful: ${total - failed} (${successfulProc}%) | Failed: ${failed} (${failedProc}%)`;
-
-        // Add delay between requests
-        if (i < total - 1) {
-            await new Promise(resolve => setTimeout(resolve, delay));
-        }
-    }
+    }));
 
     statusTextCopy += `\nTotal models: ${total} | Checked: ${checked} | Successful: ${total - failed} | Failed: ${failed}`;
     statusTextCopy += "\nCheck again here: https://mestai.online/status/";
 
     statusText.innerHTML = `${statusText.innerHTML}<br><br><button onclick="copyText(\`${statusTextCopy}\`)">Copy result</button>`;
 }
-
 
 function copyText(textToCopy) {
     navigator.clipboard.writeText(textToCopy)
